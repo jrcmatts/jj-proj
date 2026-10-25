@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111214">
+  <title>J&J Sports Wear | Workspace Hub</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <noscript>
+    <p class="noscript-message">JavaScript is required to sign in to the J&J Workspace Hub.</p>
+  </noscript>
+
+  <!-- SETUP / LOGIN: Both screens live in this one HTML page. -->
+  <main id="authView" class="auth-layout">
+    <div class="auth-intro">
+      <div class="brand" aria-label="J and J Sports Wear">J&amp;J<span>®</span></div>
+      <div class="eyebrow"><span class="eyebrow-line"></span> PRIVATE BUSINESS WORKSPACE</div>
+      <h1>Your work.<br><em>All in one place.</em></h1>
+      <p>Access your J&amp;J Sports Wear business and production tools from one clean workspace.</p>
+      <div class="intro-features" aria-label="Available workspaces">
+        <div><span class="feature-mark">01</span> Studio Manager <span class="feature-meta">Sales &amp; operations</span></div>
+        <div><span class="feature-mark">02</span> Press Manager <span class="feature-meta">Production &amp; payroll</span></div>
+      </div>
+      <p class="tagline">Wear Your Imagination.</p>
+    </div>
+
+    <section class="auth-card" aria-label="Account access">
+      <!-- First launch: owner creates the initial account. -->
+      <div id="setupPanel" hidden>
+        <div class="card-eyebrow">FIRST-TIME SETUP</div>
+        <h2>Create owner account</h2>
+        <p class="small-copy">Set up the first Owner account. You can add Admin and Staff accounts after signing in.</p>
+        <form id="setupForm" autocomplete="on">
+          <label for="setupName">Full name</label>
+          <input id="setupName" name="name" type="text" maxlength="50" autocomplete="name" placeholder="Your name" required>
+          <label for="setupUsername">Username</label>
+          <input id="setupUsername" name="username" type="text" minlength="3" maxlength="24" pattern="[a-zA-Z0-9._-]{3,24}" autocomplete="username" placeholder="e.g. owner" required>
+          <label for="setupPassword">Password</label>
+          <input id="setupPassword" name="new-password" type="password" minlength="10" autocomplete="new-password" placeholder="At least 10 characters" required>
+          <label for="setupConfirm">Confirm password</label>
+          <input id="setupConfirm" name="confirm-password" type="password" minlength="10" autocomplete="new-password" placeholder="Re-enter password" required>
+          <button class="primary-button" type="submit">Create owner account <span aria-hidden="true">→</span></button>
+          <p id="setupError" class="form-error" role="alert" hidden></p>
+        </form>
+        <p class="form-note">Local demo accounts are stored in this browser. For multi-device access, configure Supabase first.</p>
+      </div>
+
+      <!-- Returning users: choose the role you're signing in with. -->
+      <div id="loginPanel" hidden>
+        <div class="card-eyebrow">WELCOME BACK</div>
+        <h2>Sign in</h2>
+        <p class="small-copy">Select your account type to continue.</p>
+        <div class="role-tabs" role="group" aria-label="Account type">
+          <button id="managerTab" type="button" class="role-tab is-active" data-role="manager" aria-pressed="true">Owner / Admin</button>
+          <button id="staffTab" type="button" class="role-tab" data-role="staff" aria-pressed="false">Staff</button>
+        </div>
+        <form id="loginForm" autocomplete="on">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" name="username" type="text" autocomplete="username" placeholder="Enter your username" required>
+          <label for="loginPassword">Password</label>
+          <div class="password-field">
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <button id="togglePassword" type="button" class="password-toggle" aria-label="Show password">Show</button>
+          </div>
+          <button id="loginSubmit" class="primary-button" type="submit">Sign in to workspace <span aria-hidden="true">→</span></button>
+          <p id="loginError" class="form-error" role="alert" hidden></p>
+        </form>
+        <p class="form-note">Use your local demo credentials, or your Supabase email and password when cloud mode is configured.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- AUTHENTICATED HUB -->
+  <div id="appView" class="app-shell" hidden>
+    <header class="topbar">
+      <a class="brand brand-small" href="index.html" aria-label="J&J Workspace Hub">J&amp;J<span>®</span></a>
+      <div class="topbar-right">
+        <div class="current-user">
+          <span id="userAvatar" class="avatar" aria-hidden="true">JJ</span>
+          <div><strong id="currentName">—</strong><small id="currentRole">—</small></div>
+        </div>
+        <button id="logoutButton" class="outline-button" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="eyebrow"><span class="eyebrow-line"></span> J&amp;J WORKSPACE HUB</div>
+      <div class="welcome-heading">
+        <div>
+          <h1>One business.<br><em>Two connected workspaces.</em></h1>
+          <p id="welcomeDescription">Choose where you want to work today.</p>
+        </div>
+        <span id="welcomeRolePill" class="role-pill">Owner</span>
+      </div>
+
+      <div class="workspace-grid">
+        <a id="studioCard" class="workspace-card" href="studio.html">
+          <div class="workspace-topline"><span class="card-eyebrow">MAIN BUSINESS WORKSPACE</span><span class="workspace-index">01 / 02</span></div>
+          <div class="workspace-icon" aria-hidden="true">▦</div>
+          <h2>Studio Manager</h2>
+          <p>Sales records, quotations, calculator, inventory, reports, analytics and production calendar.</p>
+          <div class="card-action">Open Studio Manager <span aria-hidden="true">↗</span></div>
+        </a>
+        <a id="pressCard" class="workspace-card" href="press.html">
+          <div class="workspace-topline"><span class="card-eyebrow">PRODUCTION WORKSPACE</span><span class="workspace-index">02 / 02</span></div>
+          <div class="workspace-icon" aria-hidden="true">▤</div>
+          <h2>Press Manager</h2>
+          <p>Sublimation and DTF production, employee payroll, bale/cash advance and production history.</p>
+          <div class="card-action">Open Press Manager <span aria-hidden="true">↗</span></div>
+        </a>
+      </div>
+      <p id="staffNotice" class="access-note" hidden>Staff account: your Hub view displays the production workspace only.</p>
+
+      <!-- Only the initial Owner can manage local accounts. -->
+      <section id="teamSection" class="team-section" aria-labelledby="teamHeading" hidden>
+        <div class="section-topline">
+          <div>
+            <div class="card-eyebrow">ACCESS MANAGEMENT</div>
+            <h2 id="teamHeading">Team accounts</h2>
+            <p>Set up local accounts for the people who use this browser.</p>
+          </div>
+          <button id="addUserToggle" class="outline-button" type="button" aria-expanded="false" aria-controls="addUserArea">+ Add account</button>
+        </div>
+        <div id="addUserArea" class="add-user-area" hidden>
+          <form id="addUserForm" class="add-user-form">
+            <div class="field"><label for="newUserName">Full name</label><input id="newUserName" maxlength="50" placeholder="Staff or admin name" required></div>
+            <div class="field"><label for="newUsername">Username</label><input id="newUsername" minlength="3" maxlength="24" pattern="[a-zA-Z0-9._-]{3,24}" placeholder="Username" required></div>
+            <div class="field"><label for="newUserRole">Account role</label><select id="newUserRole"><option value="staff">Staff (Press only)</option><option value="admin">Admin (both workspaces)</option></select></div>
+            <div class="field"><label for="newUserPassword">Temporary password</label><input id="newUserPassword" type="password" minlength="10" autocomplete="new-password" placeholder="At least 10 characters" required></div>
+            <div class="form-actions"><button class="primary-button" type="submit">Create account</button><button id="cancelAddUser" class="outline-button" type="button">Cancel</button></div>
+            <p id="addUserError" class="form-error" role="alert" hidden></p>
+          </form>
+        </div>
+        <div id="userList" class="user-list" aria-live="polite"></div>
+      </section>
+
+      <footer>J&amp;J Sports Wear · Wear Your Imagination <span>Local mode is a browser-only demo. Supabase mode uses server-enforced access rules.</span></footer>
+    </main>
+  </div>
+
+  <div id="jjConnectionNote" class="jj-connection-note" role="note"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

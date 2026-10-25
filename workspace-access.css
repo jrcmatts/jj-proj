@@ -1,0 +1,15 @@
+/* Shared access gate and cloud-sync badge. */
+.jj-auth-pending body > *:not(#jj-auth-overlay){visibility:hidden!important}
+.jj-auth-overlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#111214;color:#e7c780;font:600 16px Inter,Arial,sans-serif;padding:30px;text-align:center}
+.jj-auth-pending #jj-auth-overlay{visibility:visible!important}
+.jj-auth-error #jj-auth-overlay{visibility:visible!important}
+body:not(.jj-auth-pending) #jj-auth-overlay{display:none}
+.jj-access-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto}
+.jj-access-actions a,.jj-access-actions button{display:inline-flex;align-items:center;justify-content:center;gap:5px;color:var(--text,var(--text-main,#f6efdc));background:transparent;border:1px solid var(--border,#777);padding:8px 11px;border-radius:9px;font-size:11px;text-decoration:none;cursor:pointer}
+.jj-access-actions button:hover,.jj-access-actions a:hover{border-color:var(--gold,#e7c780)}
+.jj-sync-status{position:fixed;left:14px;bottom:14px;z-index:1000;background:#292b2e;color:#fff;border:1px solid #555;border-radius:10px;padding:9px 13px;font:11px Inter,Arial,sans-serif;max-width:min(420px,calc(100vw - 28px));pointer-events:none}
+.jj-sync-status[data-state="error"]{background:#8d312d;color:white}
+.jj-sync-status[data-state="saved"]{background:#264a36}
+@media(max-width:650px){.jj-access-actions{width:100%;margin-left:0}.jj-access-actions a,.jj-access-actions button{flex:1}.jj-access-actions .jj-user-label{display:none}}
+
+body[data-workspace='studio'] .top-bar,body[data-workspace='press'] .topbar{flex-wrap:wrap}

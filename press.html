@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" class="jj-auth-pending">
+<head>
+  <link rel="stylesheet" href="press.css">
+  <link rel="stylesheet" href="workspace-access.css">
+  <script src="theme-init.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="cloud-sync.js" defer></script>
+  <script src="app-gate.js" defer></script>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J&J Sports Wear | Press Manager</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body data-workspace="press">
+  <div id="jj-auth-overlay" class="jj-auth-overlay" role="status">Checking account access…</div>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">J&J<sup>®</sup></div>
+      <h1>SPORTS WEAR</h1>
+      <p>Press Manager · Workspace</p>
+    </div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav class="nav-menu">
+      <button class="nav-btn active" data-page="dashboard" onclick="switchPage('dashboard',this)"><i class="fa-solid fa-chart-pie"></i>Overview</button>
+      <button class="nav-btn" data-page="production" onclick="switchPage('production',this)"><i class="fa-solid fa-circle-plus"></i>Add Production</button>
+      <button class="nav-btn" data-page="payroll" onclick="switchPage('payroll',this)"><i class="fa-solid fa-users"></i>Staff & Payroll</button>
+      <button class="nav-btn" data-page="advances" onclick="switchPage('advances',this)"><i class="fa-solid fa-hand-holding-dollar"></i>Cash Advances</button>
+      <button class="nav-btn" data-page="history" onclick="switchPage('history',this)"><i class="fa-solid fa-clock-rotate-left"></i>Production History</button>
+      <div class="nav-spacer"></div>
+      <div class="nav-label" style="padding-left:12px">SYSTEM</div>
+      <button class="nav-btn" data-page="settings" onclick="switchPage('settings',this)"><i class="fa-solid fa-sliders"></i>Settings</button>
+      <div class="nav-spacer"></div>
+      <div class="nav-label" style="padding-left:12px">CONNECTED APP</div>
+      <button class="nav-btn connected-app" onclick="openStudioManager()"><i class="fa-solid fa-arrow-up-right-from-square"></i>Studio Manager</button>
+    </nav>
+    <div class="sidebar-footer">
+      <p class="save-note"><i class="fa-solid fa-shield-halved"></i>Saved on this browser using LocalStorage.</p>
+      <div class="theme-switch">
+        <button id="lightThemeBtn" onclick="setTheme('light')"><i class="fa-regular fa-sun"></i> Light</button>
+        <button id="darkThemeBtn" onclick="setTheme('dark')"><i class="fa-regular fa-moon"></i> Dark</button>
+      </div>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleSidebar()" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+        <div><div class="eyebrow">J&J PRESS OPERATIONS</div><h1 class="page-title" id="pageTitle">Overview</h1></div>
+      </div>
+      <div class="clock" id="clock"></div>
+    </header>
+
+    <section class="page active" id="page-dashboard">
+      <div class="hero">
+        <div><div class="kicker">THE BUSINESS OF PRODUCTION</div><h2>Press floor.<br><em>In perspective.</em></h2><p>J&J Sports Wear · Wear Your Imagination</p></div>
+        <div class="hero-actions"><small>TODAY'S WORKFLOW</small><button class="btn btn-gold" onclick="switchPage('production')"><i class="fa-solid fa-plus"></i>Add production record</button></div>
+        <span class="hero-art">J&J</span>
+      </div>
+      <div class="grid-4" style="margin-bottom:18px">
+        <div class="stat featured"><div class="stat-label">Today's Total Pay</div><div class="stat-value" id="dash-earnings">₱0.00</div><div class="stat-note">Computed employee production pay</div></div>
+        <div class="stat"><div class="stat-label">Sublimation</div><div class="stat-value" id="dash-sub-qty">0</div><div class="stat-note">Pieces recorded today</div></div>
+        <div class="stat"><div class="stat-label">DTF Press</div><div class="stat-value" id="dash-dtf-qty">0</div><div class="stat-note">Pieces recorded today</div></div>
+        <div class="stat"><div class="stat-label">Active Staff</div><div class="stat-value" id="dash-staff">0</div><div class="stat-note">Employees in current roster</div></div>
+      </div>
+      <div class="layout-2">
+        <div class="card"><div class="card-head"><div><div class="section-label">LATEST ACTIVITY</div><h3 class="card-title">Recent production</h3></div><button class="btn btn-outline btn-sm" onclick="switchPage('history')">View history →</button></div><div id="recentProduction"></div></div>
+        <div class="card"><div class="card-head"><div><div class="section-label">PAYROLL SNAPSHOT</div><h3 class="card-title">Outstanding balances</h3></div></div><div id="dashboardPayroll"></div></div>
+      </div>
+      <div class="card connection-card"><div class="card-head"><div><div class="section-label">CONNECTED WORKSPACE</div><h3 class="card-title">J&J Studio Manager</h3></div><span class="badge green" id="studioConnectionBadge"><i class="fa-solid fa-link"></i> Linked</span></div><p class="muted" id="studioConnectionSummary">Open Studio Manager for sales, quotations, inventory, job orders, calendar, and analytics.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-gold" onclick="openStudioManager()"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open Studio Manager</button></div></div>
+    </section>
+
+    <section class="page" id="page-production">
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-label">NEW ENTRY</div><h3 class="card-title">Production record</h3><p class="muted">Record completed Sublimation or DTF work. Pay is calculated automatically from your saved rates.</p><div class="divider"></div>
+          <form id="form-production">
+            <div class="form-grid">
+              <div class="form-group"><label>Date</label><input type="date" id="prod-date" required></div>
+              <div class="form-group"><label>Product Type</label><select id="prod-type" onchange="toggleProductionFields()"><option value="SUBLIMATION">Sublimation</option><option value="DTF">DTF (Direct-to-Film)</option></select></div>
+              <div class="form-group full"><label>Customer / Team Name</label><input type="text" id="prod-customer" placeholder="e.g. Quezon BNHS" required></div>
+              <div class="form-group"><label>Product / Item</label><input type="text" id="prod-item" placeholder="e.g. Polo Shirt" required></div>
+              <div class="form-group"><label>Quantity</label><input type="number" inputmode="numeric" id="prod-qty" min="1" required placeholder="0"></div>
+            </div>
+            <div id="sublimation-fields" style="margin-top:16px">
+              <div class="callout blue" style="margin-bottom:14px"><b>Sublimation workflow</b> — choose whether one employee handles both tasks or cutting and pressing are split.</div>
+              <div class="form-grid">
+                <div class="form-group full"><label>Work Type</label><select id="prod-worktype" onchange="toggleProductionFields()"><option value="SOLO">SOLO — one employee does Cut + Press</option><option value="DUO">DUO — separate Cut and Press employees</option></select></div>
+                <div class="form-group full" id="solo-emp-container"><label>Employee — Cut + Press</label><select id="prod-emp-solo" class="emp-dropdown"></select></div>
+                <div class="form-group" id="duo-cut-container"><label>Cut Employee</label><select id="prod-emp-cut" class="emp-dropdown"></select></div>
+                <div class="form-group" id="duo-press-container"><label>Press Employee</label><select id="prod-emp-press" class="emp-dropdown"></select></div>
+              </div>
+            </div>
+            <div id="dtf-fields" class="hidden" style="margin-top:16px">
+              <div class="callout purple" style="margin-bottom:14px"><b>DTF workflow</b> — press only. The selected employee receives the DTF press rate per piece.</div>
+              <div class="form-group"><label>Press Employee</label><select id="prod-emp-dtf" class="emp-dropdown"></select></div>
+            </div>
+            <div class="form-actions"><button type="reset" class="btn btn-outline" onclick="setTimeout(resetProductionForm,0)">Clear</button><button type="submit" class="btn btn-gold"><i class="fa-solid fa-check"></i>Save production</button></div>
+          </form>
+        </div>
+        <div>
+          <div class="card"><div class="section-label">CURRENT RATES</div><h3 class="card-title">Pay reference</h3><div class="divider"></div><div class="money-row"><span>Sublimation Cut / pc</span><strong id="ratePreviewCut">₱0.00</strong></div><div class="money-row"><span>Sublimation Press / pc</span><strong id="ratePreviewPress">₱0.00</strong></div><div class="money-row"><span>DTF Press / pc</span><strong id="ratePreviewDtf">₱0.00</strong></div><div class="divider"></div><button class="btn btn-outline btn-block" onclick="switchPage('settings')"><i class="fa-solid fa-sliders"></i>Manage rates</button></div>
+          <div class="card"><div class="section-label">GOOD PRACTICE</div><h3 class="card-title">Recording workflow</h3><p class="muted">Use one record per customer/item batch. Historical records keep the rate used at the time they were saved, so future rate changes will not alter old payroll.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-payroll">
+      <div class="layout-2">
+        <div>
+          <div class="card"><div class="card-head"><div><div class="section-label">PAYROLL</div><h3 class="card-title">Unpaid balances</h3></div></div><div id="payroll-list"></div></div>
+        </div>
+        <div class="card"><div class="section-label">TEAM</div><h3 class="card-title">Manage employees</h3><p class="muted">Add or rename staff. Employees with unsettled production or advances cannot be deleted.</p><div class="divider"></div><div style="display:flex;gap:8px"><input id="new-emp-name" type="text" placeholder="Employee name"><button class="btn btn-gold" onclick="addEmployee()">Add</button></div><div class="divider"></div><div id="manage-employees-list"></div></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-advances">
+      <div class="layout-2">
+        <div class="card"><div class="section-label">BALE / CASH ADVANCE</div><h3 class="card-title">Issue employee advance</h3><p class="muted">Unsettled advances are automatically deducted from the employee's unpaid production earnings.</p><div class="divider"></div>
+          <form id="form-advance"><div class="form-grid"><div class="form-group"><label>Employee</label><select id="adv-emp" class="emp-dropdown" required></select></div><div class="form-group"><label>Date</label><input type="date" id="adv-date" required></div><div class="form-group"><label>Amount (₱)</label><input type="number" inputmode="decimal" id="adv-amount" min="1" step="0.01" placeholder="0.00" required></div><div class="form-group"><label>Reason / Note</label><input type="text" id="adv-reason" placeholder="e.g. Personal, Load" required></div></div><div class="form-actions"><button class="btn btn-orange" type="submit"><i class="fa-solid fa-hand-holding-dollar"></i>Issue advance</button></div></form>
+        </div>
+        <div class="card"><div class="card-head"><div><div class="section-label">RECENT</div><h3 class="card-title">Cash advances</h3></div></div><div id="advances-list"></div></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-history">
+      <div class="card"><div class="card-head"><div><div class="section-label">RECORDS</div><h3 class="card-title">Production history</h3></div><button class="btn btn-dark" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i>Export CSV</button></div>
+        <div class="form-grid cols-3" style="margin-bottom:16px"><div class="form-group"><label>Filter by date</label><input type="date" id="report-date-filter" onchange="renderReports()"></div><div class="form-group"><label>Search customer / item / employee</label><input type="search" id="report-search" placeholder="Search records..." oninput="renderReports()"></div><div class="form-group"><label>Type</label><select id="report-type-filter" onchange="renderReports()"><option value="">All production</option><option value="SUBLIMATION">Sublimation</option><option value="DTF">DTF</option></select></div></div>
+        <div class="summary-strip" id="historySummary"></div><div id="production-history-list"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="grid-2">
+        <div class="card"><div class="section-label">PAY CONFIGURATION</div><h3 class="card-title">Production rates</h3><p class="muted">Rate changes apply only to new records. Existing records retain the rate originally used.</p><div class="divider"></div><div class="form-grid"><div class="form-group"><label>Sublimation Cut / pc (₱)</label><input type="number" inputmode="decimal" id="rate-sub-cut" step="0.5" min="0"></div><div class="form-group"><label>Sublimation Press / pc (₱)</label><input type="number" inputmode="decimal" id="rate-sub-press" step="0.5" min="0"></div><div class="form-group full"><label>DTF Press / pc (₱)</label><input type="number" inputmode="decimal" id="rate-dtf-press" step="0.5" min="0"></div></div><div class="form-actions"><button class="btn btn-gold" onclick="saveRates()"><i class="fa-solid fa-floppy-disk"></i>Update rates</button></div></div>
+        <div>
+          <div class="card"><div class="section-label">BACKUP</div><h3 class="card-title">Protect your data</h3><p class="muted">Download a full JSON backup before moving browsers/computers or clearing data.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-dark" onclick="downloadBackup()"><i class="fa-solid fa-download"></i>Download backup</button><button class="btn btn-outline" onclick="document.getElementById('restoreFile').click()"><i class="fa-solid fa-upload"></i>Restore backup</button><input hidden type="file" id="restoreFile" accept="application/json,.json" onchange="restoreBackup(event)"></div></div>
+          <div class="card"><div class="section-label" style="color:var(--danger)">DANGER ZONE</div><h3 class="card-title">Reset system data</h3><p class="muted">This permanently removes employees, rates, production records, and cash advances saved in this browser.</p><div class="form-actions" style="justify-content:flex-start"><button class="btn btn-danger" onclick="requestClearAll()"><i class="fa-solid fa-triangle-exclamation"></i>Clear all data</button></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-backdrop" id="confirmModal"><div class="modal"><h3 id="confirmTitle">Confirm action</h3><p id="confirmText"></p><div class="form-actions"><button class="btn btn-outline" onclick="closeConfirm()">Cancel</button><button class="btn btn-danger" id="confirmActionBtn">Confirm</button></div></div></div>
+
+
+</body>
+</html>
